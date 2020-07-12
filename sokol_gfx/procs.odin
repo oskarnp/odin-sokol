@@ -2,6 +2,8 @@ package sokol_gfx
 
 import "core:os"
 
+RENDERER :: #config(RENDERER, "metal");
+
 when os.OS=="darwin" && RENDERER=="metal"    do foreign import sokol_lib "../sokol_impl_darwin_metal.dylib"
 when os.OS=="darwin" && RENDERER=="glcore33" do foreign import sokol_lib "../sokol_impl_darwin_glcore33.dylib"
 

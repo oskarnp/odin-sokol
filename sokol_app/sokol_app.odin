@@ -1,6 +1,9 @@
 package sokol_app
 
+RENDERER :: #config(RENDERER, "metal");
+
 import "core:os"
+import "core:runtime"
 
 when os.OS=="darwin" && RENDERER=="metal"    do foreign import sokol_lib "../sokol_impl_darwin_metal.dylib"
 when os.OS=="darwin" && RENDERER=="glcore33" do foreign import sokol_lib "../sokol_impl_darwin_glcore33.dylib"
@@ -309,11 +312,11 @@ foreign sokol_lib {
 run :: inline proc(desc: Desc) -> bool {
 	desc := desc;
 
-	init    :: proc "c" (u: rawptr)             { (cast(^Desc)u).init_cb(); }
-	frame   :: proc "c" (u: rawptr)             { (cast(^Desc)u).frame_cb(); }
-	cleanup :: proc "c" (u: rawptr)             { (cast(^Desc)u).cleanup_cb(); }
-	event   :: proc "c" (e: ^Event, u: rawptr)  { (cast(^Desc)u).event_cb(e^); }
-	fail    :: proc "c" (s: cstring, u: rawptr) { (cast(^Desc)u).fail_cb(string(s)); }
+	init    :: proc "c" (u: rawptr)             { context = runtime.default_context(); (cast(^Desc)u).init_cb(); }
+	frame   :: proc "c" (u: rawptr)             { context = runtime.default_context(); (cast(^Desc)u).frame_cb(); }
+	cleanup :: proc "c" (u: rawptr)             { context = runtime.default_context(); (cast(^Desc)u).cleanup_cb(); }
+	event   :: proc "c" (e: ^Event, u: rawptr)  { context = runtime.default_context(); (cast(^Desc)u).event_cb(e^); }
+	fail    :: proc "c" (s: cstring, u: rawptr) { context = runtime.default_context(); (cast(^Desc)u).fail_cb(string(s)); }
 
 	internal_desc: Internal_Desc;
     internal_desc.user_data        = &desc;

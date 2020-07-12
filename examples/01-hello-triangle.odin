@@ -3,6 +3,8 @@
 
 package main
 
+RENDERER :: #config(RENDERER, "metal");
+
 import "core:fmt"
 import sa "../sokol_app"
 import sg "../sokol_gfx"
